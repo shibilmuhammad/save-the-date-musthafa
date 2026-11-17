@@ -556,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtn.addEventListener('click', async () => {
             const shareData = {
                 title: 'Wedding Celebration | Joint Wedding Invitation',
-                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the joint wedding of Mohammed Anas & Fathimath Shafika and Nabeesath Misiriya & Sheik Mohammed Mustafa on Sunday, December 27, 2026 at The Flora by Sunflower, Madhur. Ceremonies begin at 4:30 PM, followed by evening reception at 6:00 PM onwards. Kindly grace this occasion with your presence and duas.',
+                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the joint wedding of Mohammed Anas & Fathimath Shafika and Nabeesath Missiriya & Sheik Mohammed Musthafa on Sunday, December 27, 2026 at The Flora by Sunflower, Madhur. Ceremonies begin at 4:30 PM, followed by evening reception at 6:00 PM onwards. Kindly grace this occasion with your presence and duas.',
                 url: window.location.href
             };
 

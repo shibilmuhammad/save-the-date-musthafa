@@ -1,6 +1,6 @@
 # save-the-date-musthafa
 
-A royal, luxury Muslim wedding invitation website for **Nabeesath Misiriya** & **Sheik Mohammed Mustafa**.
+A royal, luxury Muslim wedding invitation website for **Nabeesath Missiriya** & **Sheik Mohammed Musthafa** and **Mohammed Anas** & **Fathimath Shafika**.
 
 - **Wedding Date**: Sunday, December 27, 2026
 - **Time**: Nikah at 4:30 PM • Reception after Nikah
