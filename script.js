@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         envelopeVideo.setAttribute('playsinline', '');
         envelopeVideo.setAttribute('webkit-playsinline', '');
 
-        // When video reaches 5.8 seconds (card is fully zoomed and visible), transition smoothly
+        // When video reaches 7.3 seconds (card is fully zoomed and visible), transition smoothly
         envelopeVideo.addEventListener('timeupdate', () => {
-            if (envelopeVideo.currentTime >= 5.8) {
+            if (envelopeVideo.currentTime >= 7.3) {
                 finishOpening();
             }
         });
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         envelopeVideo.addEventListener('playing', () => {
             setTimeout(() => {
                 if (!openingFinished) finishOpening();
-            }, 6800);
+            }, 8200);
         });
     }
 
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         setTimeout(() => {
                             if (!openingFinished) finishOpening();
-                        }, 6500);
+                        }, 8000);
                     }).catch(() => {
                         // Mobile browser requires user interaction for sound:
                         // Keep envelope paused at pristine frame 0 so video and sound start together on tap!
