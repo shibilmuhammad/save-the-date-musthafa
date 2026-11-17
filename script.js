@@ -173,15 +173,22 @@ document.addEventListener('DOMContentLoaded', () => {
         envelopeVideo.setAttribute('playsinline', '');
         envelopeVideo.setAttribute('webkit-playsinline', '');
 
-        // When video reaches 5.5 seconds (card is fully zoomed and visible), transition automatically
+        // When video reaches 5.8 seconds (card is fully zoomed and visible), transition smoothly
         envelopeVideo.addEventListener('timeupdate', () => {
-            if (envelopeVideo.currentTime >= 5.5) {
+            if (envelopeVideo.currentTime >= 5.8) {
                 finishOpening();
             }
         });
 
-        // When video ends, transition automatically
+        // When video reaches its end, transition smoothly
         envelopeVideo.addEventListener('ended', finishOpening, { once: true });
+
+        // Once video actually starts playing on mobile, allow it to complete its full animation
+        envelopeVideo.addEventListener('playing', () => {
+            setTimeout(() => {
+                if (!openingFinished) finishOpening();
+            }, 6800);
+        });
     }
 
     // Synchronized Experience Launcher: Ensures music and video play together from the beginning
@@ -230,10 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Fallback safety timer: Guarantee reveal after 7.5s even if events are throttled
+            // Emergency safety timer: Only if video completely fails to play after 10s
             setTimeout(() => {
                 if (!openingFinished) finishOpening();
-            }, 7500);
+            }, 10000);
 
         } else {
             // INITIAL PAGE LOAD (Before user interaction):
