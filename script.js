@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     const bgMusic = document.getElementById('bg-music');
     const musicBtn = document.getElementById('floating-music-btn');
+    const musicContainer = document.getElementById('floating-music-container') || document.querySelector('.floating-music-btn-container');
     const tapPrompt = document.getElementById('tap-to-open-prompt');
     const tapBtn = document.getElementById('tap-to-open-btn');
     let isMusicPlaying = false;
@@ -61,6 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tapPrompt) {
                 tapPrompt.classList.add('hidden');
             }
+            if (musicContainer) {
+                musicContainer.classList.add('visible');
+            }
         } else {
             musicBtn.classList.remove('playing');
             musicBtn.classList.add('muted');
@@ -71,23 +75,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playNasheed(fromBeginning = false) {
-        if (!bgMusic || userManuallyMuted) return;
+        if (!bgMusic || userManuallyMuted) return Promise.reject(new Error("Muted or no audio"));
         if (fromBeginning) {
             try {
                 bgMusic.currentTime = 0;
             } catch (e) {}
         }
-        bgMusic.volume = 0.5;
+        bgMusic.volume = 0.55;
         const promise = bgMusic.play();
         if (promise !== undefined) {
-            promise.then(() => {
+            return promise.then(() => {
                 isMusicPlaying = true;
                 updateMusicUI(true);
-            }).catch(() => {
+                return true;
+            }).catch((err) => {
                 isMusicPlaying = false;
                 updateMusicUI(false);
+                throw err;
             });
         }
+        return Promise.resolve(true);
     }
 
     function pauseNasheed() {
@@ -126,8 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!envelopeScreen) return;
         envelopeScreen.classList.add('opened');
 
-        // Reveal floating music control button once invitation is opened
-        const musicContainer = document.getElementById('floating-music-container') || document.querySelector('.floating-music-btn-container');
         if (musicContainer) {
             musicContainer.classList.add('visible');
         }
@@ -149,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             window.scrollTo(0, 0);
             if (!isMusicPlaying && !userManuallyMuted) {
-                playNasheed(false);
+                playNasheed(false).catch(() => {});
             }
             if (lenis) {
                 lenis.resize();
@@ -177,136 +182,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // When video ends, transition automatically
         envelopeVideo.addEventListener('ended', finishOpening, { once: true });
+    }
 
-        // When playback starts, set fallback timer based on video duration & ensure audio starts
-        envelopeVideo.addEventListener('play', () => {
-            isEnvelopeOpening = true;
-            if (!isMusicPlaying && !userManuallyMuted) {
-                playNasheed(true);
+    // Synchronized Experience Launcher: Ensures music and video play together from the beginning
+    function startExperience(userGesture = false) {
+        if (openingFinished) return;
+
+        playNasheed(true).then(() => {
+            // Audio successfully started from 0:00!
+            if (tapPrompt) tapPrompt.classList.add('hidden');
+            if (envelopeVideo) {
+                isEnvelopeOpening = true;
+                envelopeVideo.play().catch(() => {});
+                setTimeout(finishOpening, 5800);
             }
-            setTimeout(finishOpening, 5800);
+        }).catch(() => {
+            if (userGesture) {
+                // User interacted: forcefully unlock audio and play video
+                if (bgMusic) {
+                    bgMusic.play().then(() => {
+                        isMusicPlaying = true;
+                        updateMusicUI(true);
+                    }).catch(() => {});
+                }
+                if (tapPrompt) tapPrompt.classList.add('hidden');
+                if (envelopeVideo) {
+                    isEnvelopeOpening = true;
+                    envelopeVideo.play().catch(() => {});
+                    setTimeout(finishOpening, 5800);
+                }
+            } else {
+                // Browser requires user gesture for audio:
+                // Keep video paused at frame 0 so it DOES NOT play silently!
+                if (envelopeVideo) {
+                    envelopeVideo.pause();
+                    envelopeVideo.currentTime = 0;
+                }
+                if (tapPrompt) tapPrompt.classList.remove('hidden');
+            }
         });
     }
 
-    // Attempt video playback immediately & on multiple events
-    function tryPlayEnvelopeVideo() {
-        if (!envelopeVideo || openingFinished) return;
-        envelopeVideo.muted = true;
-        envelopeVideo.defaultMuted = true;
-        const playPromise = envelopeVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                isEnvelopeOpening = true;
-                if (!isMusicPlaying && !userManuallyMuted) {
-                    playNasheed(true);
-                }
-            }).catch(() => {
-                // If browser restricts unmuted audio or strict video policy,
-                // video remains ready and will start on any touch
-            });
-        }
-    }
+    // 1. Try launching immediately
+    startExperience(false);
 
-    // 1. Try playing immediately
-    tryPlayEnvelopeVideo();
-
-    // 2. Try on canplay / loadeddata
-    if (envelopeVideo) {
-        envelopeVideo.addEventListener('canplay', tryPlayEnvelopeVideo, { once: true });
-        envelopeVideo.addEventListener('loadeddata', tryPlayEnvelopeVideo, { once: true });
-    }
-
-    // 3. Try on DOM load & Window load
-    document.addEventListener('DOMContentLoaded', () => {
-        tryPlayEnvelopeVideo();
-        playNasheed(true);
-    });
-    window.addEventListener('load', () => {
-        tryPlayEnvelopeVideo();
-        playNasheed(true);
-    });
-
-    // 4. Global failsafe: if video cannot load or user is on slow network, reveal homepage after 6.5s
-    setTimeout(finishOpening, 6500);
+    // 2. Try on DOM load & Window load
+    document.addEventListener('DOMContentLoaded', () => startExperience(false));
+    window.addEventListener('load', () => startExperience(false));
 
     // Tap to Open Invitation Button & Screen
     if (tapBtn) {
         tapBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (tapPrompt) tapPrompt.classList.add('hidden');
             userManuallyMuted = false;
-            playNasheed(true);
-            tryPlayEnvelopeVideo();
+            startExperience(true);
         });
     }
 
     if (envelopeScreen) {
         envelopeScreen.addEventListener('click', (e) => {
-            if (e.target && e.target.closest('#tap-to-open-btn')) return;
             userManuallyMuted = false;
-            if (!isMusicPlaying) {
-                playNasheed(true);
-            }
-            if (tapPrompt) tapPrompt.classList.add('hidden');
-            tryPlayEnvelopeVideo();
+            startExperience(true);
         });
     }
 
-    // Auto-enable Nasheed audio from start on first user interaction anywhere
-    const startAudioOnFirstInteraction = (e) => {
+    // Global listener: On first user interaction anywhere, ensure audio and experience start
+    const onFirstUserInteraction = (e) => {
         if (userManuallyMuted) return;
         if (e && e.target && e.target.closest('#floating-music-btn')) return;
-        tryPlayEnvelopeVideo();
-        if (!isMusicPlaying) {
-            playNasheed(true);
-        }
-        if (tapPrompt) tapPrompt.classList.add('hidden');
+        startExperience(true);
         ['click', 'touchstart', 'scroll', 'pointerdown', 'keydown'].forEach(evt => {
-            window.removeEventListener(evt, startAudioOnFirstInteraction, { capture: true });
+            window.removeEventListener(evt, onFirstUserInteraction, { capture: true });
         });
     };
     ['click', 'touchstart', 'scroll', 'pointerdown', 'keydown'].forEach(evt => {
-        window.addEventListener(evt, startAudioOnFirstInteraction, { capture: true, passive: true });
+        window.addEventListener(evt, onFirstUserInteraction, { capture: true, passive: true });
     });
-
-    // Also attempt playing audio on load from the very beginning
-    playNasheed(true);
 
     // Replay Video Envelope — Replay animation and restart nasheed from the start
     if (replayEnvelopeBtn) {
         replayEnvelopeBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'instant' });
             document.body.classList.add('opening-active');
-            const musicContainer = document.getElementById('floating-music-container') || document.querySelector('.floating-music-btn-container');
-            if (musicContainer) {
-                musicContainer.classList.remove('visible');
-            }
-            if (lenis) {
-                lenis.stop();
-                lenis.scrollTo(0, { immediate: true });
-            }
             isEnvelopeOpening = false;
             openingFinished = false;
             userManuallyMuted = false;
-            playNasheed(true); // Restart nasheed from the very beginning
-            if (tapPrompt) tapPrompt.classList.add('hidden');
             if (envelopeScreen) {
                 envelopeScreen.style.display = 'flex';
                 envelopeScreen.classList.remove('opened');
-                if (envelopeVideo) {
-                    envelopeVideo.currentTime = 0;
-                    envelopeVideo.play().catch(() => {});
-                    envelopeVideo.addEventListener('ended', finishOpening, { once: true });
-                    const onReplayTime = () => {
-                        if (envelopeVideo.currentTime >= 5.0) {
-                            finishOpening();
-                            envelopeVideo.removeEventListener('timeupdate', onReplayTime);
-                        }
-                    };
-                    envelopeVideo.addEventListener('timeupdate', onReplayTime);
-                    setTimeout(finishOpening, 5800);
-                }
             }
+            if (envelopeVideo) {
+                envelopeVideo.currentTime = 0;
+            }
+            startExperience(true);
         });
     }
 
