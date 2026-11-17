@@ -267,9 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 4. Countdown Timer Logic (January 15, 2027 at 11:00 AM)
+    // 4. Countdown Timer Logic (December 27, 2026 at 4:30 PM)
     // =========================================================================
-    const targetDate = new Date("January 15, 2027 11:00:00").getTime();
+    const targetDate = new Date("December 27, 2026 16:30:00").getTime();
     const daysEl = document.getElementById('days');
     const hoursEl = document.getElementById('hours');
     const minutesEl = document.getElementById('minutes');
@@ -478,8 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (shareBtn) {
         shareBtn.addEventListener('click', async () => {
             const shareData = {
-                title: 'Wedding Invitation | Muhammad Kais & Laila Mehdin',
-                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the Wedding of Muhammad Kais & Laila Mehdin on Friday, January 15, 2027 at Sumangali Convention Centre, Melattur. Kindly grace this occasion with your presence and duas.',
+                title: 'Wedding Invitation | Nabeesath Misiriya & Sheik Mohammed Mustafa',
+                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the Wedding of Nabeesath Misiriya & Sheik Mohammed Mustafa on Sunday, December 27, 2026 at The Flora by Sunflower, Madhur. Kindly grace this occasion with your presence and duas.',
                 url: window.location.href
             };
 

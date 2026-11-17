@@ -1,7 +1,7 @@
 {
   "name": "save-the-date-musthafa",
   "version": "1.0.0",
-  "description": "Wedding invitation website for Muhammad Kais & Laila Mehdin",
+  "description": "Wedding invitation website for Nabeesath Misiriya & Sheik Mohammed Mustafa",
   "main": "index.html",
   "scripts": {
     "dev": "npx -y serve . -l 3000",
