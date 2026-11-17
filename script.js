@@ -548,8 +548,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (shareBtn) {
         shareBtn.addEventListener('click', async () => {
             const shareData = {
-                title: 'Wedding Invitation | Nabeesath Misiriya & Sheik Mohammed Mustafa',
-                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the Wedding of Nabeesath Misiriya & Sheik Mohammed Mustafa on Sunday, December 27, 2026 at The Flora by Sunflower, Madhur. Kindly grace this occasion with your presence and duas.',
+                title: 'Two Nikahs. One Celebration | Joint Wedding Invitation',
+                text: 'With the blessings of Almighty Allah & our families, you are cordially invited to celebrate the double wedding celebration of Mohammed Anas & Fathimath Shafika and Nabeesath Misiriya & Sheik Mohammed Mustafa on Sunday, December 27, 2026 at The Flora by Sunflower, Madhur. Two Nikahs (4:30 PM & 5:00 PM), followed by one shared reception (6:00 PM onwards). Kindly grace this occasion with your presence and duas.',
                 url: window.location.href
             };
 
