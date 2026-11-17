@@ -157,6 +157,12 @@ body.opening-active {
     transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
+.tap-to-open-prompt.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateX(-50%) translateY(10px) !important;
+}
+
 .tap-to-open-btn {
     width: 100%;
     display: inline-flex;

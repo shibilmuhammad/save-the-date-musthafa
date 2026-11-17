@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     const bgMusic = document.getElementById('bg-music');
     const musicBtn = document.getElementById('floating-music-btn');
+    const tapPrompt = document.getElementById('tap-to-open-prompt');
+    const tapBtn = document.getElementById('tap-to-open-btn');
     let isMusicPlaying = false;
     let userManuallyMuted = false;
 
@@ -56,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.setAttribute('title', 'Click to Mute Sound');
             musicBtn.setAttribute('aria-label', 'Mute Sound');
             if (tooltip) tooltip.textContent = 'Mute';
+            if (tapPrompt) {
+                tapPrompt.classList.add('hidden');
+            }
         } else {
             musicBtn.classList.remove('playing');
             musicBtn.classList.add('muted');
@@ -65,9 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function playNasheed() {
+    function playNasheed(fromBeginning = false) {
         if (!bgMusic || userManuallyMuted) return;
-        bgMusic.volume = 0.45;
+        if (fromBeginning) {
+            try {
+                bgMusic.currentTime = 0;
+            } catch (e) {}
+        }
+        bgMusic.volume = 0.5;
         const promise = bgMusic.play();
         if (promise !== undefined) {
             promise.then(() => {
@@ -95,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pauseNasheed();
             } else {
                 userManuallyMuted = false;
-                playNasheed();
+                playNasheed(false);
             }
         });
     }
@@ -138,6 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 envelopeVideo.pause();
             }
             window.scrollTo(0, 0);
+            if (!isMusicPlaying && !userManuallyMuted) {
+                playNasheed(false);
+            }
             if (lenis) {
                 lenis.resize();
                 lenis.start();
@@ -165,9 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // When video ends, transition automatically
         envelopeVideo.addEventListener('ended', finishOpening, { once: true });
 
-        // When playback starts, set fallback timer based on video duration
+        // When playback starts, set fallback timer based on video duration & ensure audio starts
         envelopeVideo.addEventListener('play', () => {
             isEnvelopeOpening = true;
+            if (!isMusicPlaying && !userManuallyMuted) {
+                playNasheed(true);
+            }
             setTimeout(finishOpening, 5800);
         });
     }
@@ -181,6 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 isEnvelopeOpening = true;
+                if (!isMusicPlaying && !userManuallyMuted) {
+                    playNasheed(true);
+                }
             }).catch(() => {
                 // If browser restricts unmuted audio or strict video policy,
                 // video remains ready and will start on any touch
@@ -198,40 +217,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. Try on DOM load & Window load
-    document.addEventListener('DOMContentLoaded', tryPlayEnvelopeVideo);
-    window.addEventListener('load', tryPlayEnvelopeVideo);
+    document.addEventListener('DOMContentLoaded', () => {
+        tryPlayEnvelopeVideo();
+        playNasheed(true);
+    });
+    window.addEventListener('load', () => {
+        tryPlayEnvelopeVideo();
+        playNasheed(true);
+    });
 
     // 4. Global failsafe: if video cannot load or user is on slow network, reveal homepage after 6.5s
     setTimeout(finishOpening, 6500);
 
-    // Optional tap to skip video directly
-    if (envelopeScreen) {
-        envelopeScreen.addEventListener('click', () => {
-            finishOpening();
-            playNasheed();
+    // Tap to Open Invitation Button & Screen
+    if (tapBtn) {
+        tapBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (tapPrompt) tapPrompt.classList.add('hidden');
+            userManuallyMuted = false;
+            playNasheed(true);
+            tryPlayEnvelopeVideo();
         });
     }
 
-    // Auto-enable Nasheed audio on first user touch/click/scroll (browser policy requires gesture for audio)
+    if (envelopeScreen) {
+        envelopeScreen.addEventListener('click', (e) => {
+            if (e.target && e.target.closest('#tap-to-open-btn')) return;
+            userManuallyMuted = false;
+            if (!isMusicPlaying) {
+                playNasheed(true);
+            }
+            if (tapPrompt) tapPrompt.classList.add('hidden');
+            tryPlayEnvelopeVideo();
+        });
+    }
+
+    // Auto-enable Nasheed audio from start on first user interaction anywhere
     const startAudioOnFirstInteraction = (e) => {
         if (userManuallyMuted) return;
         if (e && e.target && e.target.closest('#floating-music-btn')) return;
         tryPlayEnvelopeVideo();
         if (!isMusicPlaying) {
-            playNasheed();
+            playNasheed(true);
         }
-        ['click', 'touchstart', 'scroll', 'pointerdown'].forEach(evt => {
+        if (tapPrompt) tapPrompt.classList.add('hidden');
+        ['click', 'touchstart', 'scroll', 'pointerdown', 'keydown'].forEach(evt => {
             window.removeEventListener(evt, startAudioOnFirstInteraction, { capture: true });
         });
     };
-    ['click', 'touchstart', 'scroll', 'pointerdown'].forEach(evt => {
+    ['click', 'touchstart', 'scroll', 'pointerdown', 'keydown'].forEach(evt => {
         window.addEventListener(evt, startAudioOnFirstInteraction, { capture: true, passive: true });
     });
 
-    // Also attempt playing audio on load in case permissions allow it
-    playNasheed();
+    // Also attempt playing audio on load from the very beginning
+    playNasheed(true);
 
-    // Replay Video Envelope
+    // Replay Video Envelope — Replay animation and restart nasheed from the start
     if (replayEnvelopeBtn) {
         replayEnvelopeBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'instant' });
@@ -246,6 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             isEnvelopeOpening = false;
             openingFinished = false;
+            userManuallyMuted = false;
+            playNasheed(true); // Restart nasheed from the very beginning
+            if (tapPrompt) tapPrompt.classList.add('hidden');
             if (envelopeScreen) {
                 envelopeScreen.style.display = 'flex';
                 envelopeScreen.classList.remove('opened');

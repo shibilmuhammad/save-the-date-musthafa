@@ -29,8 +29,8 @@
     <!-- Background Golden Dust / Sparkles Canvas -->
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Background Audio (preload="none" prevents blocking initial video & page load) -->
-    <audio id="bg-music" src="audio/audio.mp3" loop preload="none"></audio>
+    <!-- Background Audio (preload="auto" ensures instantaneous playback from start) -->
+    <audio id="bg-music" src="audio/audio.mp3" loop preload="auto" playsinline></audio>
 
     <!-- ==========================================================================
          INTERACTIVE 3D VIDEO ENVELOPE OPENING SCREEN (AUTOPLAY)
@@ -38,6 +38,12 @@
     <div id="envelope-screen">
         <div class="envelope-video-wrapper">
             <video id="envelope-video" class="envelope-video" src="videos/nabeesa_wihout_watermark.mp4" poster="images/envelope_closed.jpg" playsinline webkit-playsinline muted autoplay preload="auto" disablepictureinpicture disableremoteplayback></video>
+            <div class="tap-to-open-prompt" id="tap-to-open-prompt">
+                <button class="tap-to-open-btn" id="tap-to-open-btn" aria-label="Open Invitation With Music">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span>Tap to Open Invitation</span>
+                </button>
+            </div>
             <script>
                 (function() {
                     var v = document.getElementById('envelope-video');
