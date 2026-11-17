@@ -760,6 +760,16 @@ body.opening-active {
     letter-spacing: 0.03em;
 }
 
+.blessing-family-signature {
+    font-family: var(--font-serif-display);
+    font-size: 1.55rem;
+    font-weight: 500;
+    font-style: italic;
+    color: #2b2014;
+    margin-top: 0.35rem;
+    letter-spacing: 0.04em;
+}
+
 /* ==========================================================================
    COUNTDOWN SECTION
    ========================================================================== */
