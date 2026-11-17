@@ -1,0 +1,1410 @@
+/* ==========================================================================
+   ROYAL MUSLIM WEDDING INVITATION — DESIGN SYSTEM & STYLES
+   Inspired by Luxury Ivory & Gold Parchment Aesthetics
+   ========================================================================== */
+
+:root {
+    --bg-parchment: #F2F1E8;
+    --bg-white: #ffffff;
+    --primary-brown: #3a2c18;
+    --gold-primary: #D2C08A;
+    --gold-accent: #9E824A;
+    --gold-dark: #7a6333;
+    --gold-light: #f7f2e4;
+    --text-muted: #6e5e47;
+    --border-gold: rgba(210, 192, 138, 0.55);
+    --border-gold-light: rgba(210, 192, 138, 0.3);
+    --glass-bg: rgba(255, 255, 255, 0.82);
+    --glass-border: rgba(210, 192, 138, 0.6);
+    --shadow-luxury: 0 20px 50px rgba(158, 130, 74, 0.14);
+    --shadow-soft: 0 10px 30px rgba(158, 130, 74, 0.08);
+
+    --font-script: 'Pinyon Script', cursive;
+    --font-curly: 'Pinyon Script', cursive;
+    --font-serif-heading: 'Playfair Display', serif;
+    --font-serif-display: 'Cormorant Garamond', serif;
+    --font-arabic: 'Amiri', serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    /* Note: scroll-behavior: smooth is omitted to avoid conflict with Lenis smooth scroll */
+    font-size: 16px;
+    background-color: var(--bg-parchment);
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--primary-brown);
+    background-color: var(--bg-parchment);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    user-select: auto;
+}
+
+body.opening-active {
+    overflow: hidden !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    touch-action: none !important;
+}
+
+::selection {
+    background: rgba(210, 192, 138, 0.35);
+    color: var(--primary-brown);
+}
+
+/* Background Ambient Lighting */
+.ambient-glow {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 900px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(210, 192, 138, 0.15) 50%, transparent 75%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Canvas Particles */
+#particles-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.65;
+}
+
+/* ==========================================================================
+   ENVELOPE VIDEO OPENING SCREEN (3D INTERACTIVE REVEAL)
+   ========================================================================== */
+#envelope-screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--bg-parchment);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.9s;
+}
+
+#envelope-screen.opened {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.envelope-video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.envelope-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: opacity 0.7s ease;
+    pointer-events: none; /* Prevents browser native video HUD or pause toggles */
+}
+
+.envelope-video::-webkit-media-controls,
+.envelope-video::-webkit-media-controls-start-playback-button,
+.envelope-video::-webkit-media-controls-play-button {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Tap to Open Golden Pill Button */
+.tap-to-open-prompt {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: calc(100% - 48px);
+    max-width: 360px;
+    text-align: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.tap-to-open-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, rgba(210, 192, 138, 0.92) 0%, rgba(158, 130, 74, 0.95) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 30px rgba(158, 130, 74, 0.35), 0 0 20px rgba(210, 192, 138, 0.4);
+    animation: pulseGlow 2.5s infinite alternate;
+    cursor: pointer;
+}
+
+.tap-to-open-btn svg {
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 8px 25px rgba(158, 130, 74, 0.3), 0 0 15px rgba(210, 192, 138, 0.25);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 12px 35px rgba(158, 130, 74, 0.45), 0 0 28px rgba(210, 192, 138, 0.6);
+        transform: scale(1.02);
+    }
+}
+
+/* ==========================================================================
+   MAIN INVITATION WRAPPER
+   ========================================================================== */
+#invitation-content {
+    position: relative;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#invitation-content.visible {
+    opacity: 1;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* Glassmorphic Luxury Panels — GPU accelerated for 60fps/120fps scrolling */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 28px;
+    box-shadow: var(--shadow-luxury);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* Gold Text Gradient */
+.gold-text-gradient {
+    background: linear-gradient(135deg, #3a2c18 0%, #9E824A 45%, #D2C08A 70%, #3a2c18 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+/* Ornate Header Badge */
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-accent);
+    margin-bottom: 0.5rem;
+}
+
+.header-badge svg {
+    color: var(--gold-primary);
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3rem 1.25rem 2rem;
+    text-align: center;
+    overflow: hidden;
+}
+
+.bismillah-calligraphy {
+    font-family: var(--font-arabic);
+    font-size: 2.2rem;
+    line-height: 1.3;
+    color: var(--gold-primary);
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+    filter: drop-shadow(0 2px 8px rgba(210, 192, 138, 0.3));
+}
+
+@media (min-width: 640px) {
+    .bismillah-calligraphy {
+        font-size: 2.8rem;
+    }
+}
+
+/* Islamic Moorish Arch Portrait Frame */
+.arch-frame-wrapper {
+    position: relative;
+    width: 260px;
+    aspect-ratio: 3 / 4;
+    padding: 8px;
+    background: linear-gradient(180deg, #ffffff 0%, #F2F1E8 60%, rgba(210, 192, 138, 0.4) 100%);
+    border-radius: 140px 140px 24px 24px;
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 20px 50px rgba(158, 130, 74, 0.25);
+    margin: 1.5rem auto 1.25rem;
+}
+
+@media (min-width: 640px) {
+    .arch-frame-wrapper {
+        width: 290px;
+    }
+}
+
+.arch-frame-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 132px 132px 18px 18px;
+    overflow: hidden;
+    border: 1px solid rgba(210, 192, 138, 0.6);
+}
+
+.arch-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.arch-frame-wrapper:hover .arch-image {
+    transform: scale(1.05);
+}
+
+.arch-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(58, 44, 24, 0.35) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* Couple Names Typography */
+.hero-names-block {
+    margin: 0.75rem 0 1.5rem;
+}
+
+.hero-person-name {
+    font-family: var(--font-script);
+    font-size: clamp(2.1rem, 7vw, 3.5rem);
+    line-height: 1.18;
+    color: var(--primary-brown);
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.hero-person-name .first-name,
+.hero-person-name .last-name {
+    display: block;
+    letter-spacing: 0.02em;
+}
+
+@media (min-width: 640px) {
+    .hero-person-name {
+        font-size: 3.8rem;
+        display: block;
+    }
+    .hero-person-name .first-name,
+    .hero-person-name .last-name {
+        display: inline;
+    }
+    .hero-person-name .first-name {
+        margin-right: 0.35rem;
+    }
+}
+
+.hero-ampersand-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0.15rem 0;
+}
+
+.hero-ampersand-divider .line {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+}
+
+.hero-ampersand-divider .ampersand {
+    font-family: var(--font-script);
+    font-size: 2.2rem;
+    color: var(--gold-primary);
+    font-style: italic;
+    line-height: 1;
+}
+
+/* Hero Pill Badges */
+.hero-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+    max-width: 480px;
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--primary-brown);
+    box-shadow: 0 4px 15px rgba(158, 130, 74, 0.08);
+}
+
+.hero-pill svg {
+    color: var(--gold-accent);
+    flex-shrink: 0;
+}
+
+.hero-pill-venue {
+    width: 100%;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Scroll To Explore Indicator */
+.scroll-explore {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--gold-accent);
+    margin-top: 1rem;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.scroll-explore svg {
+    color: var(--gold-primary);
+    animation: bounceDown 2s infinite;
+}
+
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(5px); }
+    60% { transform: translateY(3px); }
+}
+
+/* ==========================================================================
+   QURANIC BLESSING & SACRED BEGINNING
+   ========================================================================== */
+.blessing-section {
+    padding: 5rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.ornate-card {
+    padding: 2.5rem 1.75rem;
+    max-width: 680px;
+    margin: 0 auto;
+    border-radius: 32px;
+}
+
+@media (min-width: 640px) {
+    .ornate-card {
+        padding: 3.5rem 3rem;
+    }
+}
+
+/* Gold Corner Accents */
+.ornate-corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: var(--gold-primary);
+    pointer-events: none;
+}
+
+.ornate-corner.top-left { top: 16px; left: 16px; border-top: 2px solid; border-left: 2px solid; }
+.ornate-corner.top-right { top: 16px; right: 16px; border-top: 2px solid; border-right: 2px solid; }
+.ornate-corner.bottom-left { bottom: 16px; left: 16px; border-bottom: 2px solid; border-left: 2px solid; }
+.ornate-corner.bottom-right { bottom: 16px; right: 16px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.emblem-circle {
+    width: 52px;
+    height: 52px;
+    background: #ffffff;
+    border: 1.5px solid var(--gold-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 15px rgba(158, 130, 74, 0.15);
+}
+
+.emblem-circle svg {
+    color: var(--gold-accent);
+}
+
+.blessing-subtitle {
+    font-family: var(--font-serif-heading);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+.quran-box {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid var(--border-gold);
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: inset 0 2px 10px rgba(158, 130, 74, 0.04);
+}
+
+.quran-verse-arabic {
+    font-family: var(--font-arabic);
+    font-size: 1.5rem;
+    line-height: 1.8;
+    color: var(--gold-accent);
+    direction: rtl;
+    margin-bottom: 0.75rem;
+}
+
+.quran-verse-translation {
+    font-family: var(--font-serif-display);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--primary-brown);
+    line-height: 1.6;
+}
+
+.invitation-body-text {
+    font-family: var(--font-serif-display);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--primary-brown);
+    margin: 1.5rem auto;
+    max-width: 520px;
+}
+
+.blessing-signature {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-gold-light);
+}
+
+.blessing-names {
+    font-family: var(--font-script);
+    font-size: 2.8rem;
+    color: var(--primary-brown);
+    margin-top: 0.5rem;
+    line-height: 1.2;
+}
+
+/* ==========================================================================
+   COUNTDOWN SECTION
+   ========================================================================== */
+.countdown-section {
+    padding: 4.5rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.section-title {
+    font-family: var(--font-serif-heading);
+    font-size: 2.2rem;
+    color: var(--primary-brown);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    font-size: 0.85rem;
+    color: var(--gold-accent);
+    font-weight: 500;
+    margin-bottom: 2.5rem;
+}
+
+.countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+    .countdown-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+}
+
+.countdown-tile {
+    padding: 1.5rem 1rem;
+    border-radius: 22px;
+    text-align: center;
+    border: 1.5px solid var(--border-gold);
+    box-shadow: 0 8px 25px rgba(158, 130, 74, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.countdown-tile:hover {
+    transform: translateY(-4px);
+}
+
+.countdown-number {
+    font-family: var(--font-serif-display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--primary-brown);
+    letter-spacing: -0.02em;
+}
+
+.countdown-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    margin-top: 0.6rem;
+}
+
+/* ==========================================================================
+   COUPLE PROFILES SECTION ("Two Souls Joined in Faith")
+   ========================================================================== */
+.couple-section {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.couple-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 780px;
+    margin: 2.5rem auto 0;
+}
+
+@media (min-width: 768px) {
+    .couple-cards-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+}
+
+.person-card {
+    padding: 2rem 1.5rem;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid var(--border-gold);
+}
+
+.person-arch-frame {
+    position: relative;
+    width: 190px;
+    aspect-ratio: 3 / 4;
+    padding: 6px;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(210, 192, 138, 0.35) 100%);
+    border-radius: 100px 100px 18px 18px;
+    border: 1.5px solid var(--gold-primary);
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 10px 30px rgba(158, 130, 74, 0.15);
+}
+
+.person-arch-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 94px 94px 14px 14px;
+    transition: transform 0.6s ease;
+}
+
+.person-card:hover .person-arch-frame img {
+    transform: scale(1.05);
+}
+
+.person-name-curly {
+    font-family: var(--font-script);
+    font-size: 2.6rem;
+    color: var(--primary-brown);
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+}
+
+.person-role-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.person-bio {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 280px;
+}
+
+/* ==========================================================================
+   INTERACTIVE SCRATCH CARD REVEAL
+   ========================================================================== */
+.scratch-section {
+    padding: 4.5rem 0;
+    text-align: center;
+}
+
+.scratch-card-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    height: 260px;
+    margin: 2rem auto 1rem;
+    border-radius: 26px;
+    overflow: hidden;
+    border: 2px solid var(--gold-primary);
+    box-shadow: var(--shadow-luxury);
+    background: #ffffff;
+}
+
+.scratch-couple-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--gold-accent);
+    box-shadow: 0 4px 14px rgba(158, 130, 74, 0.2);
+    margin-bottom: 0.35rem;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.scratch-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.scratch-card-under {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #F2F1E8 60%, rgba(210, 192, 138, 0.25) 100%);
+}
+
+.scratch-date-text {
+    font-family: var(--font-curly);
+    font-size: 2.4rem;
+    color: var(--primary-brown);
+    line-height: 1.2;
+}
+
+.scratch-time-text {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    margin: 0.25rem 0 0.5rem;
+}
+
+.scratch-venue-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--primary-brown);
+}
+
+.scratch-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    cursor: grab;
+    touch-action: none;
+    transition: opacity 0.6s ease;
+}
+
+.scratch-canvas:active {
+    cursor: grabbing;
+}
+
+.auto-reveal-link {
+    background: none;
+    border: none;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: color 0.3s;
+}
+
+.auto-reveal-link:hover {
+    color: var(--primary-brown);
+}
+
+/* ==========================================================================
+   VENUE & LOCATION CARD ("Where We Say I Do")
+   ========================================================================== */
+.venue-section {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.venue-card {
+    padding: 2rem 1.5rem;
+    max-width: 820px;
+    margin: 2.5rem auto 0;
+    border-radius: 32px;
+    text-align: left;
+}
+
+@media (min-width: 840px) {
+    .venue-card {
+        padding: 3rem 2.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        align-items: center;
+    }
+}
+
+.venue-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1.5px solid var(--gold-primary);
+    box-shadow: 0 10px 30px rgba(158, 130, 74, 0.15);
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 840px) {
+    .venue-image-wrapper {
+        margin-bottom: 0;
+    }
+}
+
+.venue-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.venue-card:hover .venue-image-wrapper img {
+    transform: scale(1.04);
+}
+
+.venue-details-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.venue-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    padding: 5px 12px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    font-weight: 600;
+}
+
+.venue-name-heading {
+    font-family: var(--font-serif-heading);
+    font-size: 1.85rem;
+    color: var(--primary-brown);
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.venue-location-sub {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.venue-divider-line {
+    width: 100%;
+    height: 1px;
+    background: var(--border-gold-light);
+    margin: 0.2rem 0;
+}
+
+.venue-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--primary-brown);
+}
+
+.venue-meta-item svg {
+    color: var(--gold-accent);
+    flex-shrink: 0;
+}
+
+/* Action Button */
+.btn-gold-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 26px;
+    background: linear-gradient(135deg, #D2C08A 0%, #9E824A 50%, #D2C08A 100%);
+    color: #ffffff;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(158, 130, 74, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .btn-gold-action {
+        width: auto;
+    }
+}
+
+.btn-gold-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(158, 130, 74, 0.4);
+}
+
+/* ==========================================================================
+   FOOTER SECTION
+   ========================================================================== */
+.invitation-footer {
+    padding: 5rem 0 3rem;
+    text-align: center;
+    position: relative;
+}
+
+.footer-card {
+    padding: 3.5rem 1.75rem 2.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+    border-radius: 32px;
+}
+
+.footer-bismillah {
+    font-family: var(--font-arabic);
+    font-size: 2rem;
+    color: var(--gold-primary);
+    margin-bottom: 0.75rem;
+}
+
+.footer-heading {
+    font-family: var(--font-serif-heading);
+    font-size: 1.75rem;
+    color: var(--primary-brown);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.footer-closing-dua {
+    font-family: var(--font-serif-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--gold-accent);
+    margin-bottom: 2rem;
+}
+
+.footer-names-box {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border-gold-light);
+    border-bottom: 1px solid var(--border-gold-light);
+    margin: 1.5rem 0;
+}
+
+.footer-couple-names {
+    font-family: var(--font-script);
+    font-size: 3.2rem;
+    color: var(--primary-brown);
+}
+
+.footer-date-venue {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-accent);
+    font-weight: 600;
+    margin-top: 0.35rem;
+}
+
+.footer-buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+.btn-secondary-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: #ffffff;
+    border: 1.5px solid var(--gold-primary);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary-brown);
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(158, 130, 74, 0.08);
+    transition: all 0.3s;
+}
+
+.btn-secondary-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(158, 130, 74, 0.15);
+    background: var(--gold-light);
+}
+
+/* Invitegram Branding Badge */
+.invitegram-credit {
+    margin-top: 3rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.invitegram-credit a {
+    color: var(--primary-brown);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   FLOATING CIRCULAR LUXURY MUSIC BUTTON
+   ========================================================================== */
+.floating-music-btn-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px) scale(0.9);
+    transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.floating-music-btn-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.floating-music-btn {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 8px 30px rgba(158, 130, 74, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    color: var(--gold-dark);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+
+.floating-music-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(158, 130, 74, 0.4);
+}
+
+.floating-music-btn:active {
+    transform: scale(0.95);
+}
+
+/* Tooltip badge */
+.floating-music-btn .music-tooltip {
+    position: absolute;
+    right: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(6px);
+    background: rgba(30, 26, 20, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #FAF8F5;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.floating-music-btn:hover .music-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Speaker icons */
+.floating-music-btn .music-icon-playing {
+    display: block;
+    width: 22px;
+    height: 22px;
+    color: var(--gold-dark);
+    stroke: var(--gold-dark);
+    stroke-width: 2.2;
+}
+
+.floating-music-btn .music-icon-muted {
+    display: none;
+    width: 22px;
+    height: 22px;
+    color: #8C827A;
+    stroke: #8C827A;
+    stroke-width: 2.2;
+}
+
+/* Animated sound waves when playing */
+@keyframes wavePulse {
+    0%, 100% {
+        opacity: 0.35;
+        stroke-width: 2;
+    }
+    50% {
+        opacity: 1;
+        stroke-width: 2.4;
+    }
+}
+
+.floating-music-btn.playing .wave-1 {
+    animation: wavePulse 1.2s ease-in-out infinite;
+}
+
+.floating-music-btn.playing .wave-2 {
+    animation: wavePulse 1.2s ease-in-out infinite 0.35s;
+}
+
+/* Muted State */
+.floating-music-btn.muted .music-icon-playing {
+    display: none;
+}
+
+.floating-music-btn.muted .music-icon-muted {
+    display: block;
+}
+
+.floating-music-btn.muted {
+    border-color: rgba(158, 130, 74, 0.35);
+    background: rgba(250, 248, 244, 0.92);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   SCROLL ANIMATIONS (Hardware accelerated, ultra-smooth)
+   ========================================================================== */
+.fade-in-on-scroll {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.fade-in-on-scroll.in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* ==========================================================================
+   WELCOME NOTE CALLOUT
+   ========================================================================== */
+.welcome-note-callout {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(210, 192, 138, 0.18) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(210, 192, 138, 0.18) 100%);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    padding: 10px 24px;
+    margin: 1.25rem auto 0.75rem;
+    box-shadow: 0 4px 15px rgba(158, 130, 74, 0.08);
+}
+
+.welcome-note-callout svg {
+    color: var(--gold-accent);
+    flex-shrink: 0;
+}
+
+.welcome-note-text {
+    font-family: var(--font-serif-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--primary-brown);
+    letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   FAMILY & PARENTAGE SECTION
+   ========================================================================== */
+.family-section {
+    padding: 4.5rem 0;
+    text-align: center;
+}
+
+.family-illustration-badge {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--gold-primary);
+    box-shadow: 0 8px 25px rgba(158, 130, 74, 0.22);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease;
+}
+
+.family-illustration-badge:hover {
+    transform: scale(1.05);
+}
+
+.family-illustration-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.family-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 820px;
+    margin: 2.5rem auto 0;
+}
+
+@media (min-width: 768px) {
+    .family-cards-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+
+.family-card {
+    padding: 2.25rem 1.75rem;
+    border-radius: 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid var(--border-gold);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.family-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(158, 130, 74, 0.18);
+}
+
+.family-role-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    background: rgba(210, 192, 138, 0.18);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--gold-accent);
+    margin-bottom: 0.75rem;
+}
+
+.family-person-title {
+    font-family: var(--font-script);
+    font-size: 2.6rem;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+}
+
+.family-details-box {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--border-gold-light);
+    border-radius: 18px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.family-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.family-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--gold-accent);
+    font-weight: 600;
+}
+
+.family-parents-name {
+    font-family: var(--font-serif-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary-brown);
+}
+
+.family-divider-mini {
+    width: 42px;
+    height: 1px;
+    background: var(--gold-primary);
+    opacity: 0.6;
+    margin: 0 auto;
+}
+
+.family-address-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 500;
+}

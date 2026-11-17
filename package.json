@@ -1,0 +1,13 @@
+{
+  "name": "save-the-date-musthafa",
+  "version": "1.0.0",
+  "description": "Wedding invitation website for Muhammad Kais & Laila Mehdin",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve . -l 3000",
+    "start": "npx -y serve . -l 3000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
