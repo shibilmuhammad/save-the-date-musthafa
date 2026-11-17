@@ -124,6 +124,7 @@ body.opening-active {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: url('images/envelope_closed.jpg') center/cover no-repeat;
 }
 
 .envelope-video {

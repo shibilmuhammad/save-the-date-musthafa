@@ -188,39 +188,88 @@ document.addEventListener('DOMContentLoaded', () => {
     function startExperience(userGesture = false) {
         if (openingFinished) return;
 
-        playNasheed(true).then(() => {
-            // Audio successfully started from 0:00!
+        if (userGesture) {
+            // DIRECT USER GESTURE (Tap / Click):
+            // Safari/iOS requires synchronous play() calls inside the user gesture event handler
             if (tapPrompt) tapPrompt.classList.add('hidden');
+
+            // 1. Synchronously trigger envelope opening video
             if (envelopeVideo) {
-                isEnvelopeOpening = true;
-                envelopeVideo.play().catch(() => {});
-                setTimeout(finishOpening, 5800);
+                envelopeVideo.muted = true;
+                envelopeVideo.defaultMuted = true;
+                envelopeVideo.playsInline = true;
+                try {
+                    envelopeVideo.currentTime = 0;
+                } catch (e) {}
+                const vPromise = envelopeVideo.play();
+                if (vPromise !== undefined) {
+                    vPromise.then(() => {
+                        isEnvelopeOpening = true;
+                    }).catch((err) => {
+                        console.warn("Video playback deferred/prevented:", err);
+                    });
+                } else {
+                    isEnvelopeOpening = true;
+                }
             }
-        }).catch(() => {
-            if (userGesture) {
-                // User interacted: forcefully unlock audio and play video
-                if (bgMusic) {
-                    bgMusic.play().then(() => {
+
+            // 2. Synchronously trigger background audio from the very start
+            if (bgMusic && !userManuallyMuted) {
+                try {
+                    bgMusic.currentTime = 0;
+                } catch (e) {}
+                bgMusic.volume = 0.55;
+                const aPromise = bgMusic.play();
+                if (aPromise !== undefined) {
+                    aPromise.then(() => {
                         isMusicPlaying = true;
                         updateMusicUI(true);
-                    }).catch(() => {});
+                    }).catch((err) => {
+                        console.warn("Audio playback prevented:", err);
+                    });
                 }
-                if (tapPrompt) tapPrompt.classList.add('hidden');
-                if (envelopeVideo) {
-                    isEnvelopeOpening = true;
-                    envelopeVideo.play().catch(() => {});
-                    setTimeout(finishOpening, 5800);
-                }
-            } else {
-                // Browser requires user gesture for audio:
-                // Keep video paused at frame 0 so it DOES NOT play silently!
-                if (envelopeVideo) {
-                    envelopeVideo.pause();
-                    envelopeVideo.currentTime = 0;
-                }
-                if (tapPrompt) tapPrompt.classList.remove('hidden');
             }
-        });
+
+            // Fallback safety timer: Guarantee reveal after 6.5s even if events are throttled
+            setTimeout(() => {
+                if (!openingFinished) finishOpening();
+            }, 6500);
+
+        } else {
+            // INITIAL PAGE LOAD (Before user interaction):
+            // Test if the browser allows unmuted audio autoplay
+            if (bgMusic && !userManuallyMuted) {
+                bgMusic.volume = 0.55;
+                const testAudio = bgMusic.play();
+                if (testAudio !== undefined) {
+                    testAudio.then(() => {
+                        // Desktop/browser with autoplay allowed: start both seamlessly
+                        isMusicPlaying = true;
+                        updateMusicUI(true);
+                        if (tapPrompt) tapPrompt.classList.add('hidden');
+                        if (envelopeVideo) {
+                            envelopeVideo.muted = true;
+                            envelopeVideo.play().catch(() => {});
+                        }
+                        setTimeout(() => {
+                            if (!openingFinished) finishOpening();
+                        }, 6500);
+                    }).catch(() => {
+                        // Mobile browser requires user interaction for sound:
+                        // Keep envelope paused at pristine frame 0 so video and sound start together on tap!
+                        isMusicPlaying = false;
+                        updateMusicUI(false);
+                        if (envelopeVideo) {
+                            try {
+                                envelopeVideo.pause();
+                                envelopeVideo.currentTime = 0;
+                            } catch (e) {}
+                        }
+                        if (tapPrompt) tapPrompt.classList.remove('hidden');
+                    });
+                }
+            }
+        }
     }
 
     // 1. Try launching immediately
@@ -237,6 +286,11 @@ document.addEventListener('DOMContentLoaded', () => {
             userManuallyMuted = false;
             startExperience(true);
         });
+        tapBtn.addEventListener('touchend', (e) => {
+            e.stopPropagation();
+            userManuallyMuted = false;
+            startExperience(true);
+        }, { passive: true });
     }
 
     if (envelopeScreen) {
@@ -244,6 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
             userManuallyMuted = false;
             startExperience(true);
         });
+        envelopeScreen.addEventListener('touchend', (e) => {
+            userManuallyMuted = false;
+            startExperience(true);
+        }, { passive: true });
     }
 
     // Global listener: On first user interaction anywhere, ensure audio and experience start
