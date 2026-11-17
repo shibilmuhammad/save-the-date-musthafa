@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         envelopeVideo.setAttribute('playsinline', '');
         envelopeVideo.setAttribute('webkit-playsinline', '');
 
-        // When video reaches 5.0 seconds (card is fully zoomed and visible), transition automatically
+        // When video reaches 5.5 seconds (card is fully zoomed and visible), transition automatically
         envelopeVideo.addEventListener('timeupdate', () => {
-            if (envelopeVideo.currentTime >= 5.0) {
+            if (envelopeVideo.currentTime >= 5.5) {
                 finishOpening();
             }
         });
@@ -230,10 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Fallback safety timer: Guarantee reveal after 6.5s even if events are throttled
+            // Fallback safety timer: Guarantee reveal after 7.5s even if events are throttled
             setTimeout(() => {
                 if (!openingFinished) finishOpening();
-            }, 6500);
+            }, 7500);
 
         } else {
             // INITIAL PAGE LOAD (Before user interaction):
